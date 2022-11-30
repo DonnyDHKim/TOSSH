@@ -163,22 +163,31 @@ end
 alloc_out_tbl.Properties.RowNames = alloc_rowname_list;
 alloc_out_diff_tbl.Properties.RowNames = alloc_diff_rowname_list;
 %%
+%a=[1 11; 2 22; 3 33; 4 44; 5 55]
+%b=mean(a)
+test = mean(alloc_out_diff_tbl)
+
+% save table
+writetable(alloc_out_tbl, 'alloc_out_tbl.csv', 'WriteRowNames',true)
+writetable(alloc_out_diff_tbl, 'alloc_diff_out_tbl.csv', 'WriteRowNames',true)
+writetable(area_out_tbl, 'area_out_tbl.csv', 'WriteRowNames',true)
+writetable(area_out_diff_tbl, 'area_diff_out_tbl.csv', 'WriteRowNames',true)
 
 
-rowname_test = [append(name_short(1), "_", scheme_list(1)), append(name_short(1), "_", scheme_list(2))]
-rowname_list_test = [];
-rowname_list_test = [rowname_list_test; rowname_test];
 
 
+%%
+% testing caldwell MRC
+src_data = readtable(string(append(path, name_list(2),'/RawFlow_', 'NWM.csv')));
+src_data = readtable(string(append(path, name_list(2),'/RawFlow_', 'AP.csv')));
+src_data = readtable(string(append(path, name_list(2),'/RawFlow_', 'HUC12L.csv')));
 
-FDC_slope = sig_FDC_slope(Q,T,'slope_range',[0.33 0.66],'plot_results',true,'fitLogSpace',true);
-fdc_slope_tbl = []
-fdc_slope_tbl = [fdc_slope_tbl; FDC_slope]
-fdc_slope_tbl = array2table(fdc_slope_tbl)
-basic_out_test = [basic_out3, fdc_slope_tbl]
 
+Q = src_data{:,7}; T = src_data{:,9};
 
-[MRC_num_segments , Segment_slopes] = sig_MRC_SlopeChanges(Q, T, 'plot_results', true, 'recession_length', 12);
+[MRC_num_segments , Segment_slopes] = sig_MRC_SlopeChanges(Q, T, 'plot_results', true, 'recession_length', 5);
+%%
+
 [MRC_num_segments , Segment_slopes] = sig_MRC_SlopeChanges(Q, T, 'recession_length', 11);
 RLD = sig_RisingLimbDensity(Q,T,'plot_results',true,'rising_limb_length',2);
 
